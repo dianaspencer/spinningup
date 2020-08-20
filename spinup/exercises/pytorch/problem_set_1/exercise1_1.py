@@ -11,7 +11,13 @@ PyTorch Tensor for (previously-generated) samples from those
 distributions, and returns a Tensor containing the log 
 likelihoods of those samples.
 
+Notes:
+
+Common stochastic policy used in continuous action spaces.
+1. sample actions from policy
+2. compute log likelihoods of particular actions , log * pi(a|s)
 """
+
 
 def gaussian_likelihood(x, mu, log_std):
     """
@@ -23,12 +29,9 @@ def gaussian_likelihood(x, mu, log_std):
     Returns:
         Tensor with shape [batch]
     """
-    #######################
-    #                     #
-    #   YOUR CODE HERE    #
-    #                     #
-    #######################
-    return torch.zeros(1)
+    k = log_std.shape[0]
+    gauss = torch.sum((x - mu)**2 / (torch.exp(log_std))**2 + 2 * log_std, dim=1)
+    return -1/2 * (gauss + k * np.log(2 * np.pi))
 
 
 if __name__ == '__main__':
