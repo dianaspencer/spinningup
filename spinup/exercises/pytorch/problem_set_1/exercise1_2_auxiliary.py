@@ -14,6 +14,7 @@ droids you're looking for, and all that...
 
 """
 
+
 def mlp(sizes, activation, output_activation=nn.Identity):
     layers = []
     for j in range(len(sizes)-1):
@@ -35,12 +36,13 @@ class MLPCritic(nn.Module):
 class ExerciseActorCritic(nn.Module):
 
     def __init__(self, observation_space, action_space, 
-                 hidden_sizes=(64,64), activation=nn.Tanh,
+                 hidden_sizes=(64, 64), activation=nn.Tanh,
                  actor=None):
         super().__init__()
+        print(action_space)
         obs_dim = observation_space.shape[0]
         self.pi = actor(obs_dim, action_space.shape[0], hidden_sizes, activation)
-        self.v  = MLPCritic(obs_dim, hidden_sizes, activation)
+        self.v = MLPCritic(obs_dim, hidden_sizes, activation)
 
     def step(self, obs):
         with torch.no_grad():
