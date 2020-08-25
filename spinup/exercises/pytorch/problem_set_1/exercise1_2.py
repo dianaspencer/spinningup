@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import numpy as np
 from spinup.exercises.pytorch.problem_set_1 import exercise1_1
@@ -12,13 +13,6 @@ writing an MLP-builder, and a few other key functions.
 
 Log-likelihoods will be computed using your answer to Exercise 1.1,
 so make sure to complete that exercise before beginning this one.
-
-Notes:
-
-Proximal policy optimization = PPO
-on-policy algorithm
-Used for environments with discrete or continuous action spaces
-
 
 """
 
@@ -42,13 +36,13 @@ def mlp(sizes, activation, output_activation=nn.Identity):
     """
     #######################
     #   YOUR CODE HERE    #
-    pi_net = nn.Sequential(
+    model = nn.Sequential(
         nn.Linear(sizes[0], sizes[1]),
         activation(),
         nn.Linear(sizes[1], sizes[2]),
         output_activation()
     )
-    return pi_net
+    return model
     #######################
 
 
@@ -66,8 +60,9 @@ class DiagonalGaussianDistribution:
         """
         #######################
         #   YOUR CODE HERE    #
-
-        pass
+        # given mu, std, and a vector z of noise from a gaussian
+        action_sample = self.mu + torch.exp(self.log_std) * torch.normal(0, 1, size=self.mu.shape).reshape(-1, 1)
+        return action_sample
         #######################
 
     # ================================(Given, ignore)========================================== #
@@ -94,11 +89,9 @@ class MLPGaussianActor(nn.Module):
         #######################
         #   YOUR CODE HERE    #
         sizes = [obs_dim, *hidden_sizes, act_dim]
-        pi_net = mlp(sizes, activation)
         #######################
-        # self.log_std = 
-        # self.mu_net = 
-        pass 
+        self.log_std = nn.Parameter(torch.ones(act_dim) * -0.5, requires_grad=True)
+        self.mu_net = mlp(sizes, activation)
 
     # ================================(Given, ignore)========================================== #
     def forward(self, obs, act=None):

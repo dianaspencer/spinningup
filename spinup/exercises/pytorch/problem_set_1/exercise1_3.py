@@ -24,6 +24,7 @@ TD3 updates.
 
 """
 
+
 class ReplayBuffer:
     """
     A simple FIFO experience replay buffer for TD3 agents.
@@ -54,7 +55,6 @@ class ReplayBuffer:
                      rew=self.rew_buf[idxs],
                      done=self.done_buf[idxs])
         return {k: torch.as_tensor(v, dtype=torch.float32) for k,v in batch.items()}
-
 
 
 def td3(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0, 
@@ -387,6 +387,7 @@ def td3(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
             logger.log_tabular('LossQ', average_only=True)
             logger.log_tabular('Time', time.time()-start_time)
             logger.dump_tabular()
+
 
 if __name__ == '__main__':
     import argparse
